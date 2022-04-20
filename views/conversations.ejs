@@ -1,0 +1,43 @@
+<%- include('sidebar') %>
+<div class="container-fluid">
+  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+    >
+      <h1 class="h2">Conversations</h1>
+      <div class="btn-toolbar mb-2 mb-md-0"></div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <% for( let i = 0; i < matchedObject.length; i++ ) { %> <% const
+        firstName = matchedObject[i].first_name %> <% const lastName =
+        matchedObject[i].last_name %> <% const photo =
+        matchedObject[i].photo_link %> <% const profession =
+        matchedObject[i].profession %> <% const country =
+        matchedObject[i].country %> <% const id = matchedObject[i].id %>
+
+        <div class="col-lg-4">
+          <div class="card mb-3">
+            <img src="<%= photo %>" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <h5 class="card-title"><%= firstName %> <%= lastName %></h5>
+              <h6 class="card-title"><%= profession %></h6>
+              <p class="card-text"><%= country %></p>
+              <a
+                id="join"
+                href="/message/<%= id %>"
+                class="btn btn-outline-primary"
+                >Message
+              </a>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <% } %>
+      </div>
+    </div>
+    <%- include('footer-sidebar') %>
+  </main>
+</div>

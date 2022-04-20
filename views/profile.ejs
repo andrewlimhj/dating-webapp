@@ -1,0 +1,88 @@
+<%- include('sidebar') %>
+
+<div class="container-fluid">
+  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+    >
+      <h1 class="h2">Profile</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <button type="button" class="btn btn-sm btn-outline-secondary">
+          <span data-feather="edit"></span>
+          Edit profile
+        </button>
+      </div>
+    </div>
+
+    <div class="col-12 pb-2">
+      <!-- Card -->
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header">
+          <h4 class="mb-0 py-3">Welcome <%= user.first_name %>!</h4>
+          <p class="mb-0"></p>
+        </div>
+        <!-- Card body -->
+        <div class="card-body">
+          <div class="d-lg-flex justify-content-center pt-4">
+            <div class="d-flex align-items-center mb-4 mb-lg-0">
+              <img
+                src="/<%= user.photo_link %> "
+                id="img-uploaded"
+                class="rounded-circle"
+                width="150px"
+                height="150px"
+                overflow="hidden"
+                alt="..."
+              />
+            </div>
+          </div>
+          <hr class="my-5" />
+          <div>
+            <h4 class="mb-0 pb-5">Personal details</h4>
+            <!-- Form -->
+            <div class="row">
+              <!-- First name -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">First name</h6>
+                <p class="card-text"><%= user.first_name %></p>
+              </div>
+              <!-- Last name -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Last name</h6>
+                <p class="card-text"><%= user.last_name %></p>
+              </div>
+              <!-- Email -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Email</h6>
+                <p class="card-text"><%= user.email %></p>
+              </div>
+              <!-- Profession -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Profession</h6>
+                <p class="card-text"><%= user.profession %></p>
+              </div>
+              <!-- Gender -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Gender</h6>
+                <p class="card-text"><%= user.gender %></p>
+              </div>
+              <!-- City -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Country</h6>
+                <p class="card-text"><%= user.country %></p>
+              </div>
+              <!-- Date Of Birth -->
+              <div class="mb-3 col-12 col-md-6">
+                <h6 class="card-title">Date of birth</h6>
+                <p class="card-text"><%= dateOfBirth %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('footer-sidebar') %>
+  </main>
+</div>
