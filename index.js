@@ -17,7 +17,7 @@ import authMiddleware from './middlewares/auth.middleware.js';
 import { getHashedString, getHashWithSalt } from './hash.js';
 import pool from './initPool.js';
 import { MessageService } from './services/index.js';
-import getARandomPhoto from './randomPhoto.js';
+// import getARandomPhoto from './randomPhoto.js';
 
 const PORT = process.argv[2];
 
@@ -241,7 +241,7 @@ app.get('/discover', authMiddleware, (req, res) => {
     return;
   }
 
-  const randomPhoto = getARandomPhoto();
+  // const randomPhoto = getARandomPhoto();
   const { userId } = req;
   // console.log('userId', userId);
 
@@ -270,17 +270,24 @@ app.get('/discover', authMiddleware, (req, res) => {
 
           // todo: add unsplash API
           if (!mate) {
-            randomPhoto.then((photoResult) => {
-              const html = `<html>
+            const html = `<html>
               <body>
               <h3> Opps no more potential mates! </h3>
-            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
             <a href="/profile">Back to your profile</a>
             </body>
             </html>`;
-              console.log(photoResult);
-              res.send(html);
-            });
+            // randomPhoto.then((photoResult) => {
+            // const html = `<html>
+            //   <body>
+            //   <h3> Opps no more potential mates! </h3>
+            // <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+            // <a href="/profile">Back to your profile</a>
+            // </body>
+            // </html>`;
+            //   console.log(photoResult);
+            res.send(html);
+            // });
+
             return;
           }
 
@@ -301,17 +308,24 @@ app.get('/discover', authMiddleware, (req, res) => {
 
           // todo: add unsplash API
           if (!mate) {
-            randomPhoto.then((photoResult) => {
-              const html = `<html>
+            const html = `<html>
               <body>
               <h3> Opps no more potential mates! </h3>
-            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
             <a href="/profile">Back to your profile</a>
             </body>
             </html>`;
-              console.log(photoResult);
-              res.send(html);
-            });
+            // randomPhoto.then((photoResult) => {
+            //   const html = `<html>
+            //   <body>
+            //   <h3> Opps no more potential mates! </h3>
+            // <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+            // <a href="/profile">Back to your profile</a>
+            // </body>
+            // </html>`;
+            //   console.log(photoResult);
+            //   res.send(html);
+            // });
+            res.send(html);
             return;
           }
 
@@ -408,7 +422,7 @@ app.get('/conversations', authMiddleware, (req, res) => {
     return;
   }
 
-  const randomPhoto = getARandomPhoto();
+  // const randomPhoto = getARandomPhoto();
   const { userId } = req;
   console.log('userId', userId);
 
@@ -511,17 +525,24 @@ app.get('/conversations', authMiddleware, (req, res) => {
             }
           });
         } else {
-          randomPhoto.then((photoResult) => {
-            const html = `<html>
+          const html = `<html>
               <body>
-              <h3> Sorry no matches yet! </h3>
-            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+              <h3> Sorry, no matches yet! </h3>
             <a href="/profile">Back to your profile</a>
             </body>
             </html>`;
-            console.log(photoResult);
-            res.send(html);
-          });
+          // randomPhoto.then((photoResult) => {
+          //   const html = `<html>
+          //     <body>
+          //     <h3> Sorry no matches yet! </h3>
+          //   <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+          //   <a href="/profile">Back to your profile</a>
+          //   </body>
+          //   </html>`;
+          //   console.log(photoResult);
+          //   res.send(html);
+          // });
+          res.send(html);
         }
       });
     })
