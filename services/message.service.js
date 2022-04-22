@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import pool from '../initPool.js';

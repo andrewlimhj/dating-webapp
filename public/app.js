@@ -3,6 +3,9 @@ const app = () => {
   // eslint-disable-next-line no-undef
   const socket = io();
   socket.emit('subscribe');
+  // const roomID = document.getElementById('roomid').value;
+  // console.log(roomID);
+  // const socket = io(`/${roomID}`);
 
   // todo: declare currentRoom object
   let currentRoom = {};

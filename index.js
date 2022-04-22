@@ -17,6 +17,7 @@ import authMiddleware from './middlewares/auth.middleware.js';
 import { getHashedString, getHashWithSalt } from './hash.js';
 import pool from './initPool.js';
 import { MessageService } from './services/index.js';
+import getARandomPhoto from './randomPhoto.js';
 
 const PORT = process.argv[2];
 
@@ -46,26 +47,16 @@ app.use(express.static('uploads'));
 /* ------------------------------- /home page ------------------------------- */
 
 app.get('/', authMiddleware, (req, res) => {
-  res.render('home');
+  const { LoggedIn } = req.cookies;
+
+  res.render('home', { LoggedIn });
 });
 
-// create header
-// before login
-// home
-// sign-up
-// login
-
-// after login
-// home
-// profile
-// discover
-
-// create footer
-
 /* ------------------------------ /sign up page ----------------------------- */
-// header
 
 app.get('/sign-up', authMiddleware, (req, res) => {
+  const { LoggedIn } = req.cookies;
+
   if (req.isUserLoggedIn === true) {
     console.log('Already logged in');
     res.redirect('/profile');
@@ -92,7 +83,7 @@ app.get('/sign-up', authMiddleware, (req, res) => {
       return countryArray;
     })
     .then(() => {
-      res.render('sign-up', { countryArray });
+      res.render('sign-up', { countryArray, LoggedIn });
     })
     .catch((error) => {
       console.error(error.rows);
@@ -121,6 +112,7 @@ app.post('/sign-up', authMiddleware, singleFileUpload, (req, res) => {
     req.file.filename,
   ];
 
+  // eslint-disable-next-line operator-linebreak
   const sqlQuery =
     'INSERT INTO user_account (first_name, last_name, email, password, profession, gender, country, date_of_birth, photo_link) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
 
@@ -136,34 +128,18 @@ app.post('/sign-up', authMiddleware, singleFileUpload, (req, res) => {
     });
 });
 
-// render a sign-up form
-// first name
-// last name
-// gender
-// email
-// password
-// profession
-// city
-// date of birth
-// upload photo
-
-// footer
-
 /* ------------------------------- /login page ------------------------------ */
-// header
 
 app.get('/login', authMiddleware, (req, res) => {
+  const { LoggedIn } = req.cookies;
+
   if (req.isUserLoggedIn === true) {
     console.log('Already logged in');
     res.redirect('/profile');
     return;
   }
-  res.render('login');
+  res.render('login', { LoggedIn });
 });
-
-// render login form
-// email
-// password
 
 app.post('/login', authMiddleware, (req, res) => {
   if (req.isUserLoggedIn === true) {
@@ -217,9 +193,8 @@ app.delete('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// footer
-
 /* ------------------------------ /profile page ----------------------------- */
+
 app.get('/profile', authMiddleware, (req, res) => {
   if (req.isUserLoggedIn === false) {
     console.log('Not logged in');
@@ -252,18 +227,8 @@ app.get('/profile', authMiddleware, (req, res) => {
     });
 });
 
-// create sidebar
-// my profile
-// discover
-// list of likes
-// list of conversations
-// logout --> redirect to login
-
-// render user a profile
 // todo: edit profile
 // todo: delete profile
-
-// footer
 
 /* ----------------------------- /discover page ----------------------------- */
 // todo: connect unsplash API
@@ -276,8 +241,9 @@ app.get('/discover', authMiddleware, (req, res) => {
     return;
   }
 
+  const randomPhoto = getARandomPhoto();
   const { userId } = req;
-  console.log('userId', userId);
+  // console.log('userId', userId);
 
   const queryUser = `SELECT * FROM user_account WHERE id=${userId}`;
 
@@ -304,7 +270,17 @@ app.get('/discover', authMiddleware, (req, res) => {
 
           // todo: add unsplash API
           if (!mate) {
-            res.send('Opps no more potential mates');
+            randomPhoto.then((photoResult) => {
+              const html = `<html>
+              <body>
+              <h3> Opps no more potential mates! </h3>
+            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+            <a href="/profile">Back to your profile</a>
+            </body>
+            </html>`;
+              console.log(photoResult);
+              res.send(html);
+            });
             return;
           }
 
@@ -325,7 +301,17 @@ app.get('/discover', authMiddleware, (req, res) => {
 
           // todo: add unsplash API
           if (!mate) {
-            res.send('Opps no more potential mates');
+            randomPhoto.then((photoResult) => {
+              const html = `<html>
+              <body>
+              <h3> Opps no more potential mates! </h3>
+            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+            <a href="/profile">Back to your profile</a>
+            </body>
+            </html>`;
+              console.log(photoResult);
+              res.send(html);
+            });
             return;
           }
 
@@ -384,21 +370,8 @@ app.post('/discover', authMiddleware, (req, res) => {
       });
   }
 });
-// side bar
-// render user b
-// first name
-// last name
-// age
-// profession
-// city
-// buttons
-// like
-// skip
-
-// footer
 
 /* --------------------------- /list of likes page -------------------------- */
-// side bar
 
 app.get('/likes', authMiddleware, (req, res) => {
   if (req.isUserLoggedIn === false) {
@@ -426,14 +399,6 @@ app.get('/likes', authMiddleware, (req, res) => {
 });
 
 // todo: unlike someone
-// render list of liked profiles
-// first name
-// last name
-// age
-// profession
-// city
-
-// footer
 
 /* ------------------------- /list of conversations ------------------------- */
 app.get('/conversations', authMiddleware, (req, res) => {
@@ -443,6 +408,7 @@ app.get('/conversations', authMiddleware, (req, res) => {
     return;
   }
 
+  const randomPhoto = getARandomPhoto();
   const { userId } = req;
   console.log('userId', userId);
 
@@ -471,16 +437,13 @@ app.get('/conversations', authMiddleware, (req, res) => {
 
         for (let i = 0; i < likedBack.length; i += 1) {
           const likedBackUser = likedBack[i].from_user_account_id;
-          // likedBackArray.push(likedBackUser);
-          console.log('likedBackUser', likedBackUser);
+          // console.log('likedBackUser', likedBackUser);
 
           likesArray.forEach((userLikes) => {
             console.log('forEach');
 
             if (userLikes === likedBackUser) {
               let inMatchedTable = false;
-
-              console.log('in the if statement');
 
               const checkMatchedQuery = `SELECT * FROM matched WHERE (a_user_account_id=${userId} AND b_user_account_id=${likedBackUser}) OR (a_user_account_id=${likedBackUser} AND b_user_account_id=${userId})`;
 
@@ -545,12 +508,20 @@ app.get('/conversations', authMiddleware, (req, res) => {
 
             if (matched[0]) {
               res.render('conversations', { matchedObject });
-            } else {
-              res.send('Sorry, no matches.');
             }
           });
         } else {
-          res.send('Sorry, no matches.');
+          randomPhoto.then((photoResult) => {
+            const html = `<html>
+              <body>
+              <h3> Sorry no matches yet! </h3>
+            <img src="${photoResult.full}" alt="" width="600" height="600"><br><br>
+            <a href="/profile">Back to your profile</a>
+            </body>
+            </html>`;
+            console.log(photoResult);
+            res.send(html);
+          });
         }
       });
     })
@@ -559,15 +530,6 @@ app.get('/conversations', authMiddleware, (req, res) => {
       res.status(503).send(error.rows);
     });
 });
-
-// side bar
-// render list of conversations
-// profile photo
-// first name
-// last name
-// snippet of last message
-
-// footer
 
 /* ------------------------------ /message page ----------------------------- */
 let roomId;
@@ -606,7 +568,7 @@ app.get('/message/:id', authMiddleware, (req, res) => {
         const otherChatUserResult = otherUserResult.rows;
         userData.push(otherChatUserResult);
         const flatUserData = userData.flat();
-        console.log('FLAT USER DATA', flatUserData);
+        // console.log('FLAT USER DATA', flatUserData);
 
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < flatUserData.length; i++) {
@@ -635,21 +597,23 @@ app.get('/message/:id', authMiddleware, (req, res) => {
 });
 
 // socket is listening to the word "connection"
+// io.of(/([0-9])\w+/g).on('connection', (socket) => {
 io.on('connection', (socket) => {
   // when we connect, we show that someone has joined
   console.log('a user connected to the server');
-
-  console.log('socket id: ', socket.id);
-
+  // const socketObject = socket.nsp;
+  // console.log('SOCKET OBJECT', socketObject.name);
+  console.log('SOCKET ID:', socket.id);
+  // console.log('IO', io);
   // joining chatrooms
   const chatroom = roomId;
   console.log('chatroom:', chatroom);
 
   socket.on('subscribe', async () => {
     const userDataA = await messageService.getUserDataA(userId);
-    console.log('USER DATA A', userDataA);
-    const userDataB = await messageService.getUserDataA(id);
-    console.log('USER DATA B', userDataB);
+    // console.log('USER DATA A', userDataA);
+    const userDataB = await messageService.getUserDataB(id);
+    // console.log('USER DATA B', userDataB);
 
     const messages = await messageService.listMessagesByRoom(chatroom);
 
@@ -672,6 +636,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chatMessage', async (data) => {
+    console.log('socket id: ', socket.id);
     const userDataA = await messageService.getUserDataA(userId);
     // console.log('USER DATA A', userDataA);
     const userDataB = await messageService.getUserDataA(id);
@@ -684,7 +649,6 @@ io.on('connection', (socket) => {
 
     console.log(`${sender} says: ${message}`);
     await messageService.createMessage(chatroom, sender, message);
-
     io.to(chatroom).emit('chatMessage', { data, userDataA, userDataB });
   });
 });

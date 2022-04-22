@@ -21,6 +21,7 @@ const authMiddleware = (request, response, next) => {
       console.log('User is logged in');
       request.isUserLoggedIn = true;
       request.userId = userId;
+
       next();
     }
   } else {
