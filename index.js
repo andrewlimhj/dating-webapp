@@ -9,6 +9,8 @@ import { createServer } from 'http';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
+import aws from 'aws-sdk';
+import multerS3 from 'multer-s3';
 import path from 'path';
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -27,7 +29,29 @@ dotenv.config({ path: path.normalize(envFilePath) });
 // const PORT = process.argv[2];
 const { PORT } = process.env;
 
-const multerUpload = multer({ dest: 'uploads/' });
+// aws
+// const multerUpload = multer({ dest: 'uploads/' });
+
+// heroku
+const s3 = new aws.S3({
+  accessKeyId: process.env.ACCESSKEYID,
+  secretAccessKey: process.env.SECRETACCESSKEY,
+});
+
+const multerUpload = multer({
+  storage: multerS3({
+    s3,
+    bucket: 'deto-bucket',
+    acl: 'public-read',
+    metadata: (request, file, callback) => {
+      callback(null, { fieldName: file.fieldname });
+    },
+    key: (request, file, callback) => {
+      callback(null, Date.now().toString());
+    },
+  }),
+});
+
 const singleFileUpload = multerUpload.single('photo');
 
 const app = express();
@@ -110,7 +134,7 @@ app.post('/sign-up', authMiddleware, singleFileUpload, (req, res) => {
     req.body.gender,
     req.body.country,
     req.body.date_of_birth,
-    req.file.filename,
+    req.file.location,
   ];
 
   // eslint-disable-next-line operator-linebreak

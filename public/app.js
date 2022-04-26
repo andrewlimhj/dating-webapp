@@ -59,7 +59,7 @@ const app = () => {
     }
 
     const avatar = document.createElement('img');
-    avatar.src = `/${senderPhoto}`;
+    avatar.src = `${senderPhoto}`;
 
     const messageData = document.createElement('span');
     messageData.classList.add('message-data-time');
@@ -124,9 +124,9 @@ const app = () => {
 
       const avatar = document.createElement('img');
       if (senderId === userDataA.id) {
-        avatar.src = `/${userDataA.photo_link}`;
+        avatar.src = `${userDataA.photo_link}`;
       } else if (senderId === userDataB.id) {
-        avatar.src = `/${userDataB.photo_link}`;
+        avatar.src = `${userDataB.photo_link}`;
       }
 
       const messageData = document.createElement('span');
