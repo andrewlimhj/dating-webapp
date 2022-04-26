@@ -19,12 +19,13 @@ import pool from './initPool.js';
 import { MessageService } from './services/index.js';
 // import getARandomPhoto from './randomPhoto.js';
 
-const PORT = process.argv[2];
-
 const messageService = new MessageService();
 
 const envFilePath = '.env';
 dotenv.config({ path: path.normalize(envFilePath) });
+
+// const PORT = process.argv[2];
+const { PORT } = process.env;
 
 const multerUpload = multer({ dest: 'uploads/' });
 const singleFileUpload = multerUpload.single('photo');
