@@ -4,7 +4,17 @@ const { Pool } = pg;
 
 let pgConnectionConfigs;
 
-if (process.env.ENV === 'PRODUCTION') {
+/* --------------------------------- heroku --------------------------------- */
+if (process.env.DATABASE_URL) {
+  // pg will take in the entire value and use it to connect
+  pgConnectionConfigs = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  };
+  /* ----------------------------------- aws ---------------------------------- */
+} else if (process.env.ENV === 'PRODUCTION') {
   pgConnectionConfigs = {
     user: 'postgres',
     password: process.env.DB_PASSWORD,
@@ -12,6 +22,7 @@ if (process.env.ENV === 'PRODUCTION') {
     database: 'dating',
     port: 5432,
   };
+  /* ------------------------------- local host ------------------------------- */
 } else {
   pgConnectionConfigs = {
     user: 'andrewlim',
