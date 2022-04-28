@@ -27,7 +27,7 @@ const envFilePath = '.env';
 dotenv.config({ path: path.normalize(envFilePath) });
 
 // const PORT = process.argv[2];
-const { PORT } = process.env;
+const PORT = process.env.PORT || 3004;
 
 // aws
 // const multerUpload = multer({ dest: 'uploads/' });
