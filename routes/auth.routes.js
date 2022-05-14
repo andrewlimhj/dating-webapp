@@ -1,19 +1,25 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
 
-import { Router } from 'express'
+import { Router } from 'express';
 import multer from 'multer';
 import aws from 'aws-sdk';
 import multerS3 from 'multer-s3';
 
+import pool from '../initPool.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
-import { getSignUp, getLogin, postLogin, postSignUp, logout } from '../controller/auth.controller.js'
+import AuthController, {
+  getLogin, postLogin, postSignUp, logout,
+} from '../controller/auth.controller.js';
+
+dotenv.config();
 
 // heroku
 const s3 = new aws.S3({
   accessKeyId: process.env.ACCESSKEYID,
   secretAccessKey: process.env.SECRETACCESSKEY,
 });
+
+const authController = new AuthController(pool);
 
 const multerUpload = multer({
   storage: multerS3({
@@ -31,17 +37,17 @@ const multerUpload = multer({
 
 const singleFileUpload = multerUpload.single('photo');
 
-const routePrefix = ''
-const router = Router()
+const routePrefix = '';
+const router = Router();
 
-router.get(`${routePrefix}/sign-up`, authMiddleware, getSignUp)
+router.get(`${routePrefix}/sign-up`, authMiddleware, authController.getSignUp);
 
-router.post(`${routePrefix}/sign-up`, authMiddleware, singleFileUpload, postSignUp)
+router.post(`${routePrefix}/sign-up`, authMiddleware, singleFileUpload, postSignUp);
 
-router.get(`${routePrefix}/login`, authMiddleware, getLogin)
+router.get(`${routePrefix}/login`, authMiddleware, getLogin);
 
-router.post(`${routePrefix}/login`, authMiddleware, postLogin)
+router.post(`${routePrefix}/login`, authMiddleware, postLogin);
 
-router.delete(`${routePrefix}/logout`, authMiddleware, logout)
+router.delete(`${routePrefix}/logout`, authMiddleware, logout);
 
-export default router
+export default router;
