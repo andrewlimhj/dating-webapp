@@ -38,6 +38,7 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
+    "@types/socket.io": "^3.0.2",
     "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
